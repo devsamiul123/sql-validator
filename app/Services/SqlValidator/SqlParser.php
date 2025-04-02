@@ -314,7 +314,8 @@ class SqlParser
     private function parseColumnList()
     {
         // Handle SELECT * case
-        if ($this->match('special', '*')) {
+        if ($this->match('operator', '*')) {
+            // $this->advance();
             return true;
         }
         

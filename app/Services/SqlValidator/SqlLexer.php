@@ -32,7 +32,7 @@ class SqlLexer
     
     public function __construct(string $input)
     {
-        $this->input = $input;
+        $this->input = strtoupper($input);
     }
     
     public function tokenize()

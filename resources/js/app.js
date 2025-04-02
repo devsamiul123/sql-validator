@@ -1,41 +1,35 @@
-// resources/js/app.js
-
-import './bootstrap';
 import { createApp } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import { createPinia } from 'pinia';
-import App from './components/App.vue';
-import Home from './components/Home.vue';
-import SQLValidator from './components/SQLValidator.vue';
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
+import axios from 'axios';
 
-import 'bootstrap/dist/css/bootstrap.css';
-import 'bootstrap/dist/js/bootstrap.js';
+import SqlValidator from './components/SqlValidator.vue';
 
-// Define routes
+// Configure Axios
+axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+const token = document.querySelector('meta[name="csrf-token"]');
+if (token) {
+  axios.defaults.headers.common['X-CSRF-TOKEN'] = token.getAttribute('content');
+}
+
+// Create Pinia store
+const pinia = createPinia();
+pinia.use(piniaPluginPersistedstate);
+
+// Set up router
 const routes = [
-    {
-        path: '/',
-        name: 'home',
-        component: Home
-    },
-    {
-        path: '/validator',
-        name: 'validator',
-        component: SQLValidator
-    }
+  { path: '/', component: SqlValidator, name: 'home' },
+  // Add more routes as needed in the future
 ];
 
-// Configure router
 const router = createRouter({
-    history: createWebHistory(),
-    routes
+  history: createWebHistory(),
+  routes
 });
 
-// Create pinia store (Vue 3's recommended state management)
-const pinia = createPinia();
-
-// Create and mount the app
-const app = createApp(App);
-app.use(router);
+// Create and mount the Vue app
+const app = createApp(SqlValidator);
 app.use(pinia);
+app.use(router);
 app.mount('#app');
